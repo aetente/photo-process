@@ -19,7 +19,7 @@ img.crossOrigin = "Anonymous";
 // img.src = 'img/_meh3.jpg';
 // img.src = 'img/test1.jpg';
 // img.src = 'img/eeeeee123123png.png';
-img.src = 'img/plants_trees_1427_1745_Small.jpg';
+img.src = 'img/window1.png';
 // img.src = 'img/ava.png';
 //canvas.style.height=img.height+"px";
 //canvas.style.width=img.width+"px";
@@ -124,6 +124,30 @@ const colorToAlpha = (imageData, colorToCheck, distanceThreshold) => {
     return processedData
 }
 
+const modifyNonZeroOpacity = (imageData) => {
+
+    const processedData = JSON.parse(JSON.stringify(imageData))
+    let t = 0
+    console.log(processedData[0][0].a)
+    for (let y = 0; y < processedData.length; y++) {
+        let dataRow = processedData[y]
+        for (let x = 0; x < dataRow.length; x++) {
+            t += 1
+            let { r, g, b, a } = imageData[y][x]
+            if (a < 255) {
+                processedData[y][x].a += 150
+            }
+            if (processedData[y][x].a > 255) {
+                processedData[y][x].a = 255
+            }
+
+
+        }
+
+    }
+    return processedData
+}
+
 const processData = (imageData) => {
 
     const processedData = JSON.parse(JSON.stringify(imageData))
@@ -204,14 +228,8 @@ function reDraw() {
 
     let organisedData = organizeImageData(imD0.data)
     // const processedData = processData(organisedData)
-    const processedData = colorToAlpha(organisedData, {r: 253, g: 253, b: 253}, 250)
-    // for (var i = 0; i < imD0.data.length; i += 4) {
-    //     let j = roundNumberByBase(i, 4);
-    //     imD0.data[j] = 0; // red
-    //     imD0.data[j + 1] = 0; // green
-    //     imD0.data[j + 2] = 0; // blue
-
-    // }
+    // const processedData = colorToAlpha(organisedData, {r: 221, g: 208, b: 214}, 40)
+    const processedData = modifyNonZeroOpacity(organisedData)
     for (let y = 0; y < processedData.length; y++) {
         let dataRow = processedData[y]
         for (let x = 0; x < dataRow.length; x++) {
@@ -223,41 +241,6 @@ function reDraw() {
         }
 
     }
-    // for (var i = 0; i < imD0.data.length; i += 4) {
-    //     counter += 1;
-    //     j = roundNumberByBase(i, 4);
-    //     //console.log(j);
-    //     //arg = (sin(-PI/2+3*4*j/imD0.data.length+sin(300*j)/5)+1)/2;
-    //     //indF = roundNumberByBase(round(imD0.data.length*arg));
-
-    //     let something1 = 1000
-    //     let something2 = 30
-
-    //     arg = (sin(j * j * j * cos(j) * something1 + 1)) * something2;
-    //     indF = roundNumberByBase(round(j + arg), 4);
-
-    //     arg2 = (sin(j * j * j * cos(j) * something1 + 1)) * something2;
-    //     indF2 = roundNumberByBase(round(j + arg2), 4);
-
-    //     arg3 = (sin(j * j * j * sin(j) * something1 + 1)) * something2;
-    //     indF3 = roundNumberByBase(round(j + arg3), 4);
-
-    //     if (indF > imD0.data.length) {
-    //         indF = roundNumberByBase(imD0.data.length, 4);
-    //     }
-    //     else if (indF < 0) {
-    //         indF += 4;
-    //         indF = roundNumberByBase(indF, 4);
-    //     }
-
-    //     imD0.data[j] = imD0.data[indF]; // red
-    //     imD0.data[j + 1] = imD0.data[indF2 + 1]; // green
-    //     imD0.data[j + 2] = imD0.data[indF3 + 2]; // blue
-
-    //     if (i < 4 || j < i) {
-    //         i += 4;
-    //     }
-    // }
     ctx.putImageData(imD0, 0, 0);
 }
 
